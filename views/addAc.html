@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Add Account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <form>
+        <div>
+            <label> Add Your Account Information</label>
+            <input id="email-acc" type="email" >
+            <input id="password-acc" type="password">
+        </div>
+        
+        <button type="submit">OK</button>
+    </form>
+    <script>
+        
+        const {ipcRenderer} = require('electron');
+
+        const information = document.querySelector("form");
+        console.log(information);
+        if(information){
+            information.addEventListener('submit', saveInformation);
+        }
+        
+
+        function saveInformation(e){
+            e.preventDefault();
+            
+            
+            let data = {
+                email:document.querySelector('#email-acc').value,
+                password:document.querySelector('#password-acc').value,
+                type: 'saveAccount'
+            }
+            
+            ipcRenderer.send('requestHandler', data);
+            
+            
+        }
+    
+    </script>
+</body>
+</html>

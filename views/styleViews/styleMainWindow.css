@@ -1,0 +1,134 @@
+body{
+    background-color: #eeeef2;
+    
+    margin: 0;
+    padding: 0;
+    position: fixed;
+}
+body, html {
+    height: 100%;
+    min-width: 250px;
+  }
+
+#left-menu{
+    width: 250px;
+    height: 100%;
+    background-color: #cccedb;
+    min-width: 250px;
+    position: fixed;
+    overflow: hidden;
+}
+#add-account{
+    width: 160px;
+    height: 40px;
+    margin: 45px;
+    border: 0;
+    background-color: #007acc;  
+    transition: all 0.3s ease 0s;
+    outline: none;  
+    cursor: pointer;
+}
+p{
+   color:  #eeeef2;
+   font-family: lato heavy;
+   font-size: 10px ;
+}
+
+#add-account:hover{
+    opacity: 0.55;
+}
+
+.accounts{
+    
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    
+}
+.accounts div{
+    width: 100%;
+    height: 30px;
+    color: #007acc;
+    font-family: lato Medium;
+    font-size: 15px ;
+    text-align: center;
+    line-height: 30px;
+}
+.email{
+    width: 100%;
+    height: 30px;
+    padding-right: 100px;
+    vertical-align: 30px;
+
+}
+.email:hover{
+    background-color:#cccccc; 
+    
+}
+
+.email p{
+    margin-left: 10px; 
+    text-align: left; 
+    color: #1e1e1e;
+    font-family: lato Medium;
+    font-size: 10px;
+    position: relative;
+    
+    
+}
+
+.switch {
+    margin-left: 180px;
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    top:-37px;
+   
+   
+  }
+.switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+.slider:before {
+    position: absolute;
+    content: "";
+    font-size: 10px;
+    height: 24px;
+    width: 24px;
+    left: 0px;
+    bottom: 0px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: #007acc;
+}
+input:focus + .slider {
+    
+    box-shadow: 0 0 1px #007acc;
+}
+input:checked + .slider:before {
+    
+    -webkit-transform: translateX(24px);
+    -ms-transform: translateX(24px);
+    transform: translateX(24px);
+}
+
+  
+  
+  

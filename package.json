@@ -1,0 +1,17 @@
+{
+  "name": "fifa-bot",
+  "version": "1.0.0",
+  "description": "fifa transfer coins desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "BENKORRECHE MOHAMED EL AMINE",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^3.0.5",
+    "electron-reload": "^1.2.5",
+    "express-session": "^1.15.6",
+    "jsdom": "^12.2.0"
+  }
+}
