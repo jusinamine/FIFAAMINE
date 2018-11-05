@@ -11,7 +11,6 @@ var jsonFile = require('./accountInfo');
 let addAccountWindow;
 let account = [];
 let accountList = {};
-var opened_windows = {};
 
 
 app.on('ready', function(){
@@ -20,6 +19,11 @@ app.on('ready', function(){
 
 	mainWindow.once('ready-to-show', () => {
 		mainWindow.show();
+		accountList = JSON.parse(fs.readFileSync('accountInfo.json'))[0];
+	});
+
+	mainWindow.on('close', () => {
+		save_account_data();
 	});
 
 	mainWindow.loadURL(url.format({
@@ -49,7 +53,7 @@ function createAddAccountWindow(){
 
 // ea web app
 function createEaWindow(emailAcc, passAcc){
-	session.defaultSession.clearStorageData();
+
 	// var loadingWindow = new BrowserWindow({width: 600, height: 400, transparent: true, frame: false, parent: mainWindow, modal: true});
 	// add loadingWindow 
 	// loadingWindow.loadURL(url.format({
@@ -59,36 +63,36 @@ function createEaWindow(emailAcc, passAcc){
 	// }));
 	// create ea window
 
-	// var ses = session.fromPartition(emailAcc);
+	// if (accountList[emailAcc].window) {
+	// 	accountList[emailAcc].window.show();
+	// 	console.log("here")
+	// 	return;
+	// }
 
-	
-	opened_windows[emailAcc] = {
-		window : new BrowserWindow({width:600, height:400, show:false, parent: mainWindow}),
-		cookies : null,
-	};
+	accountList[emailAcc].window = new BrowserWindow({width:600, height:400, show:false, parent: mainWindow});
+	accountList[emailAcc].window.webContents.session.clearStorageData();
 
-	// opened_windows[emailAcc].window.on('close', event => {
-	// 	opened_windows[emailAcc].window.webContents.session.cookies.get({}, (error, cookies) => {
-	// 		opened_windows[emailAcc].cookies = cookies;
-	// 		console.log(opened_windows[emailAcc].cookies);
-	// 	});
-	// });
 
-	opened_windows[emailAcc].window.loadURL('https://fantasy.premierleague.com/');
+	accountList[emailAcc].window.on('close', event => {
+		event.preventDefault();
+		accountList[emailAcc].window.hide();
+	});
+
+
+
+	accountList[emailAcc].window.loadURL('https://fantasy.premierleague.com/');
 
 	// send email and pass to ea 
-	opened_windows[emailAcc].window.webContents.on('did-finish-load', () => {
+	accountList[emailAcc].window.webContents.on('did-finish-load', () => {
 		
-		opened_windows[emailAcc].window.webContents.executeJavaScript(
+		accountList[emailAcc].window.webContents.executeJavaScript(
 			`document.getElementById("ismjs-username").value = '${emailAcc}';`
 		);
-		opened_windows[emailAcc].window.webContents.executeJavaScript(
+		accountList[emailAcc].window.webContents.executeJavaScript(
 			`document.getElementById("ismjs-password").value = '${passAcc}';`
 		);
 		// loadingWindow.destroy();
-		opened_windows[emailAcc].window.show();
-		
-		opened_windows[emailAcc].window.webContents.session.clearStorageData([], () => {});
+		accountList[emailAcc].window.show();
 		
 	});
 }
@@ -133,19 +137,25 @@ ipcMain.on('requestHandler', (event, data) => {
 		addAccountWindow.close();
 		accountList[data.email] = {
 			password : data.password,
-			// session: null
+			window: null,
 		};
-		var tab = [accountList];
-		let sendToJson = JSON.stringify(tab,null,2);
-		fs.writeFileSync('accountInfo.json',sendToJson);  
+		save_account_data();
 	}
 
 	if(data.type === 'addAccount')
 		createAddAccountWindow();
 
-	if(data.type === 'openEaWindow'){
-		accountList = JSON.parse(fs.readFileSync('accountInfo.json'))[0];
+	if(data.type === 'openEaWindow')
 		createEaWindow(data.email,accountList[data.email].password);
-	}
+
 });
 
+
+function save_account_data() {
+	for (let email in accountList) {
+		accountList[email].window  = null;
+	}
+	var tab = [accountList];
+	let sendToJson = JSON.stringify(tab,null,2);
+	fs.writeFileSync('accountInfo.json',sendToJson);  
+}
