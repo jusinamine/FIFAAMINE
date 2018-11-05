@@ -53,7 +53,7 @@ function createAddAccountWindow(){
 
 // ea web app
 function createEaWindow(emailAcc, passAcc){
-
+	// session.defaultSession.clearStorageData();
 	// var loadingWindow = new BrowserWindow({width: 600, height: 400, transparent: true, frame: false, parent: mainWindow, modal: true});
 	// add loadingWindow 
 	// loadingWindow.loadURL(url.format({
@@ -71,11 +71,22 @@ function createEaWindow(emailAcc, passAcc){
 
 	accountList[emailAcc].window = new BrowserWindow({width:600, height:400, show:false, parent: mainWindow});
 	accountList[emailAcc].window.webContents.session.clearStorageData();
+	// if (accountList[emailAcc].cookies)
+	// 	accountList[emailAcc].cookies.forEach(cookie => {
+	// 		accountList[emailAcc].window.webContents.session.cookies.set( cookie, () => {} );
+	// 	});
+	// 	accountList[emailAcc].cookies.forEach(cookie => {
+	// 		session.defaultSession.cookies.set( cookie, () => {} );
+	// 	});
 
 
 	accountList[emailAcc].window.on('close', event => {
 		event.preventDefault();
 		accountList[emailAcc].window.hide();
+		// accountList[emailAcc].window.webContents.session.cookies.get({}, (error, cookies) => {
+		// 	accountList[emailAcc].cookies = cookies;
+		// 	console.log(accountList[emailAcc].cookies);
+		// });
 	});
 
 
@@ -137,6 +148,7 @@ ipcMain.on('requestHandler', (event, data) => {
 		addAccountWindow.close();
 		accountList[data.email] = {
 			password : data.password,
+			// cookies: null,
 			window: null,
 		};
 		save_account_data();
