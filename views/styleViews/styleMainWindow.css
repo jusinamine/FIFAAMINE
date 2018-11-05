@@ -69,17 +69,17 @@ p {
     font-family: lato Medium;
     font-size: 15px ;
     text-align: center;
-    line-height: 30px;
+    /* line-height: 30px; */
 }
 .email{
-    width: 100%;
+    display: flex;
     height: 30px;
     padding-right: 100px;
     vertical-align: 30px;
 
 }
 .email:hover{
-    background-color:#cccccc; 
+    background-color:#b4b4b4; 
     
 }
 
@@ -90,8 +90,8 @@ p {
     font-family: lato Medium;
     font-size: 10px;
     position: relative;
-    
-    
+    /* line-height: 30px; */   
+    width: calc(100% - 60px); 
 }
 
 .switch {
@@ -100,15 +100,14 @@ p {
     display: inline-block;
     width: 30px;
     height: 15px;
-    top:-32px;
-    
+    margin: 7px 0;
+    /* top:-32px; */
    
   }
 .switch input {
-opacity: 0;
-width: 0;
-height: 0;
-
+    display: none;
+    width: 0;
+    height: 0;
 }
 .slider {
     position: absolute;
@@ -139,7 +138,6 @@ input:checked + .slider {
     background-color: #007acc;
 }
 input:focus + .slider {
-    
     box-shadow: 0 0 1px #007acc;
 }
 input:checked + .slider:before {
