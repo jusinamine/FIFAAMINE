@@ -5,7 +5,7 @@ var fs = require('fs');
 
 require('electron-reload')(__dirname, { electron: require(  path.join(__dirname, 'node_modules', 'electron') ) });
 
-const {app, BrowserWindow, Menu, session, ipcMain, webContents} = electron;
+const {app, BrowserWindow, Menu, Session, ipcMain, webContents} = electron;
 var jsonFile = require('./accountInfo'); 
 let addAccountWindow;
 let account = [];
@@ -44,7 +44,10 @@ function createAddAccountWindow(){
 }
 
 // ea web app
-function createEaWindow(emailAcc,passAcc,sessAcc){
+function createEaWindow(emailAcc,passAcc){
+  
+  var s  = new Session();
+  session.defaultSession.clearStorageData();
   var loadingWindow = new BrowserWindow({width: 600, height: 400, transparent: true, frame: false, parent: mainWindow, modal: true});
   // add loadingWindow 
   loadingWindow.loadURL(url.format({
@@ -53,17 +56,19 @@ function createEaWindow(emailAcc,passAcc,sessAcc){
     slashes:true
   }));
   // create ea window
-  var eaWindow = new BrowserWindow({width:600, height:400, show:false, parent: mainWindow, modal: true, webPreferences: {
-    partition: 'persist:mywin'
-  }});
+  
+  eaWindow = new BrowserWindow({width:600, height:400, show:false, parent: mainWindow, session:s});
+  
+  
   eaWindow.on('close', function(){
     eaWindow = null;
   });
-  eaWindow.loadURL('https://fantasy.premierleague.com/');
-  
-  
-  
-  
+  //eaWindow.loadURL('https://fantasy.premierleague.com/');
+  eaWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'yyy.html'),
+    protocol: 'file:',
+    slashes:true
+  }));
   // send email and pass to ea 
   eaWindow.webContents.on('did-finish-load', ()=>{
     
@@ -76,8 +81,9 @@ function createEaWindow(emailAcc,passAcc,sessAcc){
     eaWindow.webContents.executeJavaScript(password);
     loadingWindow.destroy();
     eaWindow.show();
-    return eaWindow;
+    
   });
+    return eaWindow;
   
   
 }
@@ -121,8 +127,6 @@ if(process.env.NODE_ENV !== 'production'){
   });
 }
 
-
-
 // Attach listener in the main process with the given ID
 ipcMain.on('requestHandler', (event, data) => {
    if(data.type === 'saveAccount'){
@@ -142,9 +146,11 @@ ipcMain.on('requestHandler', (event, data) => {
     createAddAccountWindow();
    }
    if(data.type === 'openEaWindow'){
-    accountList = JSON.parse(fs.readFileSync('accountInfo.json'))[0];
-    opened_windows[data.email] = createEaWindow(data.email,accountList[data.email].password,accountList[data.email].session);
     
+    accountList = JSON.parse(fs.readFileSync('accountInfo.json'))[0];
+    opened_windows[data.email] = createEaWindow(data.email,accountList[data.email].password);
+ 
+    console.log(opened_windows);
    }
 });
 

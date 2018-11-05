@@ -19,30 +19,47 @@ body, html {
     overflow: hidden;
 }
 #add-account{
-    width: 160px;
+    width: 100px;
     height: 40px;
-    margin: 45px;
+    margin-left: 23px;
+    margin-top: 40px;
     border: 0;
     background-color: #007acc;  
     transition: all 0.3s ease 0s;
     outline: none;  
     cursor: pointer;
+    border-radius: 5px;
 }
 p{
    color:  #eeeef2;
    font-family: lato heavy;
-   font-size: 10px ;
+   font-size: 8px ;
 }
 
 #add-account:hover{
     opacity: 0.55;
 }
 
+#delete-account{
+    width: 100px;
+    height: 40px;
+    margin: 0;
+    border: 0;
+    background-color: #cc000d;  
+    transition: all 0.3s ease 0s;
+    outline: none;  
+    cursor: pointer;
+    border-radius: 5px;
+}
+#delete-account:hover{
+    opacity: 0.55;
+}
 .accounts{
     
     width: 100%;
     height: 100%;
     display: inline-block;
+    margin-top: 30px;
     
 }
 .accounts div{
@@ -81,16 +98,17 @@ p{
     margin-left: 180px;
     position: relative;
     display: inline-block;
-    width: 40px;
-    height: 24px;
-    top:-37px;
-   
+    width: 30px;
+    height: 15px;
+    top:-32px;
+    
    
   }
 .switch input {
 opacity: 0;
 width: 0;
 height: 0;
+
 }
 .slider {
     position: absolute;
@@ -102,18 +120,20 @@ height: 0;
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
+    border-radius: 15px;
   }
 .slider:before {
     position: absolute;
     content: "";
     font-size: 10px;
-    height: 24px;
-    width: 24px;
+    height: 15px;
+    width: 15px;
     left: 0px;
     bottom: 0px;
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
+    border-radius: 15px;
 }
 input:checked + .slider {
     background-color: #007acc;
@@ -124,9 +144,9 @@ input:focus + .slider {
 }
 input:checked + .slider:before {
     
-    -webkit-transform: translateX(24px);
-    -ms-transform: translateX(24px);
-    transform: translateX(24px);
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
 }
 
   

@@ -37,14 +37,14 @@ add.addEventListener('click', ()=> {
 // open ea window when checkebox is checked and send email of checkbox target
 
 var infoemail = document.getElementsByTagName("p");
+console.log(infoemail)
 var ch = document.getElementsByClassName("check");
 function isChecked(el){
+    
     if(el.checked === true){
         
-        var setEmail = infoemail[indexInClass(el)+1].innerText;
-        
         let data = {
-            email: infoemail[indexInClass(el)+1].innerText,
+            email: infoemail[indexInClass(el)+2].innerText,
             type: 'openEaWindow'
         }
         ;
