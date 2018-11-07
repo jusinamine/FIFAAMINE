@@ -65,6 +65,7 @@ function activate_account(email){
 	});
 
 	accountList[email].window.on('close', () => {
+
 		accountList[email].window = null;
 	});
 
@@ -118,11 +119,9 @@ ipcMain.on('requestHandler', (event, data) => {
 
 	if(data.type === 'openEaWindow')
 		activate_account(data.email);
-
+	if(data.type === 'DeleteAccount')
+		delete_account(data.email);
 	
-	if(data.type === 'closeEaWindow')
-		deactivate_account(data.email);
-
 });
 
 function add_new_account(data) {
@@ -162,14 +161,10 @@ function add_new_account(data) {
 	});
 }
 
-function deactivate_account(email) {
-	accountList[email].window.close();
-}
-
 
 function add_account_to_menu(email) {
 	mainWindow.webContents.executeJavaScript(`
-		document.getElementById('accounts-list').insertAdjacentHTML('beforeend','<div class= "email"><p>${ email }</p><span class="switch" onclick="isChecked(this)"><input class="check" type="checkbox"><span class="slider"></span></span></div>');
+		document.getElementById('accounts-list').insertAdjacentHTML('beforeend','<div class= "email"><p>${ email }</p><div class="delete-icon"></div><span class="switch"><input class="check" type="checkbox" onclick="isChecked(this)"><span class="slider"></span></span></div>');
 	`);
 }
 
@@ -180,4 +175,14 @@ function save_account_data() {
 	var tab = [accountList];
 	let sendToJson = JSON.stringify(tab,null,2);
 	fs.writeFileSync('accountInfo.json',sendToJson);  
+}
+
+function delete_account(emailDel) {
+	
+	emailDel = emailDel.toString();
+	delete accountList[emailDel];
+	var tab = [accountList];
+	let sendToJson = JSON.stringify(tab,null,2);
+	fs.writeFileSync('accountInfo.json',sendToJson);
+	console.log(accountList);
 }
