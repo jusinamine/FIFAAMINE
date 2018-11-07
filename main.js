@@ -11,7 +11,7 @@ var jsonFile = require('./accountInfo');
 let addAccountWindow;
 let account = [];
 let accountList = {};
-const ea_site = "https://fantasy.premierleague.com/";
+const ea_site = "https://signin.ea.com/p/web2/login?execution=e1405161290s1&initref=https%3A%2F%2Faccounts.ea.com%3A443%2Fconnect%2Fauth%3Fprompt%3Dlogin%26accessToken%3Dnull%26client_id%3DFIFA-19-WEBCLIENT%26response_type%3Dtoken%26display%3Dweb2%252Flogin%26locale%3Dfr_FR%26redirect_uri%3Dhttps%253A%252F%252Fwww.easports.com%252Ffr%252Ffifa%252Fultimate-team%252Fweb-app%252Fauth.html%26release_type%3Dprod%26scope%3Dbasic.identity%2Boffline%2Bsignin";
 
 app.on('ready', function(){
 	// Create new window
@@ -65,15 +65,15 @@ function activate_account(email){
 	});
 
 	accountList[email].window.on('close', () => {
-
+		
 		accountList[email].window = null;
 	});
 
 	accountList[email].window.loadURL(ea_site);
 
-	// accountList[email].window.webContents.on('did-finish-load', () => {
-	// 	accountList[email].window.show();
-	// });
+	 accountList[email].window.webContents.on('did-finish-load', () => {
+		accountList[email].window.show();
+	 });
 }
 
 
@@ -119,9 +119,12 @@ ipcMain.on('requestHandler', (event, data) => {
 
 	if(data.type === 'openEaWindow')
 		activate_account(data.email);
+
 	if(data.type === 'DeleteAccount')
 		delete_account(data.email);
-	
+
+	if(data.type === 'closeEaWindow')
+		deactivate_account(data.email);
 });
 
 function add_new_account(data) {
@@ -150,10 +153,10 @@ function add_new_account(data) {
 	window.webContents.on('did-finish-load', () => {
 		
 		window.webContents.executeJavaScript(
-			`document.getElementById("ismjs-username").value = '${data.email}';`
+			`document.getElementById("email").value = '${data.email}';`
 		);
 		window.webContents.executeJavaScript(
-			`document.getElementById("ismjs-password").value = '${data.password}';`
+			`document.getElementById("password").value = '${data.password}';`
 		);
 
 		window.show();
@@ -177,6 +180,10 @@ function save_account_data() {
 	fs.writeFileSync('accountInfo.json',sendToJson);  
 }
 
+function deactivate_account(email) {
+	accountList[email].window.close();
+}
+
 function delete_account(emailDel) {
 	
 	emailDel = emailDel.toString();
@@ -186,3 +193,4 @@ function delete_account(emailDel) {
 	fs.writeFileSync('accountInfo.json',sendToJson);
 	console.log(accountList);
 }
+
