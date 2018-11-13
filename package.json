@@ -12,6 +12,7 @@
     "electron": "^3.0.5",
     "electron-reload": "^1.2.5",
     "express-session": "^1.15.6",
-    "jsdom": "^12.2.0"
+    "jsdom": "^12.2.0",
+    "selenium-webdriver": "^4.0.0-alpha.1"
   }
 }
