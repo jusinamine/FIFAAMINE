@@ -31,7 +31,6 @@ var getPlayerById = (PLAYER_ID) =>{
                     
                 }
                 catch (err) {
-                    console.log('nr')
                     resolve('No results');
                 }
             });

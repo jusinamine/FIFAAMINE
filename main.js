@@ -6,8 +6,7 @@ const { Builder, By, Key, until, promise } = require('selenium-webdriver');
 
 var chrome = require('selenium-webdriver/chrome');
 const querystring = require('querystring');
-// require('electron-reload')(__dirname, { electron: require(  path.join(__dirname, 'node_modules', 'electron') ) });
-//require('electron-reload')(__dirname);
+
 // botdevja45 futcompte1930@yandex.com
 const fn = require('./function/playerById');
 const api = require('./api_send');
@@ -31,11 +30,11 @@ function set_driver(path) {
 set_driver(
 	path.join(__dirname, 'chromedriver', 'chromedriver')
 );*/
-/*
+
 // WINDOWS
  set_driver(
  	path.join(__dirname, 'chromedriver', 'chromedriver.exe')
- );*/
+ );
 
 app.on('ready', function () {
 	// Create new window
@@ -60,7 +59,8 @@ app.on('ready', function () {
 		protocol: 'file:',
 		slashes: true
 	}));
-
+	mainWindow.setMenu(null);
+	
 	const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
 	Menu.setApplicationMenu(mainMenu);
 
@@ -87,10 +87,11 @@ function createAddAccountWindow() {
 	addAccountWindow.on('close', () => {
 		addAccountWindow = null;
 	});
+	addAccountWindow.setMenu(null);
 }
 
 
-//futcomptebuy7@outlook.com azeERT67 botdevja45
+
 // login to ea web app account
 async function activate_account(email) {
 
@@ -112,6 +113,7 @@ async function activate_account(email) {
 		try{
 			if(await driver[email].findElement(By.className('ut-language-select sm-ut-content-container ut-content-container'))){
 				mainWindow.webContents.executeJavaScript("document.querySelector('#load-back').style.visibility = 'hidden';");
+				error_message(2);
 				clearInterval(lowConx);
 			}
 		}
@@ -153,7 +155,7 @@ async function activate_account(email) {
 	try{
 		await driver[email].findElement(By.className('general-error'));
 		mainWindow.webContents.executeJavaScript("document.querySelector('#load-back').style.visibility = 'hidden';");
-
+		error_message(1);
 	}
 	catch(err){
 		await driver[email].findElement(By.id('btnSendCode')).click();
@@ -165,8 +167,7 @@ async function activate_account(email) {
 	}
 	
 }
-	
-	// await driver.quit();
+
 
 //creat Menu
 const mainMenuTemplate = [{
@@ -222,46 +223,50 @@ ipcMain.on('requestHandler', (event, data) => {
 
 	if (data.type === 'showAccContent') {
 		emailBuy = data.divemail;
+		mainWindow.webContents.executeJavaScript("document.querySelector('#error-msg').style.visibility = 'hidden';");
 		for (i = 0; i < emailIsCon.length; i++) {
 			if (emailIsCon[i] === data.divemail) {
 				show_acc_content(data.divemail);
 				break;
 			}
 		}
+		if(emailIsCon.includes(data.divemail) === false){
+			mainWindow.webContents.executeJavaScript("document.querySelector('#main-box').style.visibility = 'hidden';");
+		}
 	}
 
 	if(data.type === 'buyPlayers'){
-		testbuy("Mohammed Al Shalhoub",200,150,emailBuy);
-		/*
-		fc.listP = [];
+
+		fc.listP = [];  
 		fc.getTradeFifacoins().then(function(p){
-
-			var buy = setInterval(function(){
-				 
-				console.log(fc.listP.length)
-				console.log('bankok '+ p);
-				if( p.length > 0 ){
-
-					fn.getPlayerById(p[0][0]['resourceId'])
-					.then(function (playerName){
-						console.log('function parametre: '+playerName+p[0][0]['buyNowPrice']+p[0][0]['startingBid']);
-						if(playerName != 'No results')
-							buy_player(playerName,p[0][0]['buyNowPrice'],p[0][0]['startingBid'],emailBuy);
-						
-					}).then(function (){
-						p.shift();
-					});	
-				}
-				getCoins(emailBuy).then(function(s){
-					console.log(s);
-					if(s<40000){
-						fc.stopTrade();
-						clearInterval(buy);
+			if(p !== 'error-key'){
+				var buy = setInterval(function(){
+	
+					if( p.length > 0 ){
+	
+						fn.getPlayerById(p[0][0]['resourceId'])
+						.then(function (playerName){
+							if(playerName != 'No results')
+								buy_player(playerName,p[0][0]['buyNowPrice'],p[0][0]['startingBid'],emailBuy);
+							
+						}).then(function (){
+							p.shift();
+						});	
 					}
-				});
-				if(stopBuy === 'stopBuy')
-					clearInterval(buy);
-			},10000)}); */
+					getCoins(emailBuy).then(function(s){
+						if(s<5000){
+							fc.stopTrade();
+							clearInterval(buy);
+						}
+					});
+					if(stopBuy === 'stopBuy')
+						clearInterval(buy);
+				},10000);
+			}
+			else{
+				error_message(4);
+			}
+		}); 
 	
 	}
 	if(data.type === 'stopBuy'){
@@ -271,6 +276,7 @@ ipcMain.on('requestHandler', (event, data) => {
 });
 
 function add_new_account(data) {
+
 	add_account_to_menu(data.email);
 	accountList[data.email] = {
 		password: data.password
@@ -278,6 +284,7 @@ function add_new_account(data) {
 	save_account_data();
 	addAccountWindow.close();
 	mainWindow.reload();
+
 }
 
 function change_api_key(data){
@@ -293,10 +300,6 @@ function add_account_to_menu(email) {
 }
 
 function save_account_data() {
-	/*
-	for (let email in accountList) {
-		accountList[email].window  = null;
-	}*/
 	var tab = [accountList];
 	let sendToJson = JSON.stringify(tab, null, 2);
 	fs.writeFileSync('accountInfo.json', sendToJson);
@@ -330,6 +333,7 @@ async function get_ea_code(eaCode) {
 	try {
 		if (await driver[emailAcc].findElement(By.className('origin-ux-textbox-status-icon'))) {
 			codeEaWindow.webContents.executeJavaScript("document.querySelector('#code-error p').innerHTML = 'error code try again'");
+			codeEaWindow.webContents.executeJavaScript("document.getElementById('submit-code').style.pointerEvents = 'auto'");
 		}
 	}
 	catch (err) {
@@ -351,6 +355,15 @@ async function get_ea_code(eaCode) {
 }
 //show account information in a div
 async function show_acc_content(em) {
+	
+	try{
+		if(await driver[em].findElement(By.className('ut-livemessage-container'))){
+			await driver[em].findElement(By.className('btn-standard call-to-action')).click();
+		}
+	}
+	catch(err){
+
+	}
 	try {
 		var clubeName = await driver[em].findElement(By.className('view-navbar-clubinfo-name')).getText();
 		var coins = await driver[em].findElement(By.className('view-navbar-currency-coins')).getText();
@@ -364,18 +377,17 @@ async function show_acc_content(em) {
 		
 	}
 	catch (err) {
-		
 		mainWindow.webContents.executeJavaScript(`
 		for(i=0;i<document.getElementsByClassName('email').length;i++){
 			document.getElementsByClassName('email')[i].style.pointerEvents = 'auto';
 			document.getElementsByClassName('email')[i].style.backgroundColor = '#cccedb';
 			document.getElementsByClassName('email')[i].onmouseover = function(){this.style.backgroundColor = '#b4b4b4'};
-       	    document.getElementsByClassName('email')[i].onmouseleave  = function(){this.style.backgroundColor = '#cccedb'};
+				document.getElementsByClassName('email')[i].onmouseleave  = function(){this.style.backgroundColor = '#cccedb'};
 		}
 		`);
 	}
-
 }
+
 async function getCoins(email){
 	var coins = await driver[email].findElement(By.className('view-navbar-currency-coins')).getText();
 	console.log(coins)
@@ -384,6 +396,7 @@ async function getCoins(email){
 	return coins;
 }
 // buy player from ultimate team 
+
 async function buy_player(namePlayer, buyPrice, bidPrice, email) {
 
 	var coins = await driver[email].findElement(By.className('view-navbar-currency-coins')).getText();
@@ -466,24 +479,58 @@ async function buy_player(namePlayer, buyPrice, bidPrice, email) {
 
 				nbrPlayer = await driver[email].findElements(By.className("listFUTItem has-auction-data"));
 				if(nbrPlayer.length === 1){
-
+					buy_message(0,namePlayer,buyPrice);
 					await driver[email].findElement(By.className("btn-standard buyButton coins")).click();
 					while(true){
 						try{
 
 							let btnBuy = await driver[email].findElements(By.className("flat"));
 							await btnBuy[1].click();
-							let quickSell = await driver[email].findElements(By.css('.ut-button-group button'));
-							await quickSell[9].click();
+							await driver[email].findElement(By.className('view-tab-bar-item icon-home')).click();
 							break;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 						}
 
 						catch(err){
 							continue;
 						}
 					}
-					
+					while(true){
+						try{
+							await driver[email].findElement(By.className('view-tab-bar-item icon-squad')).click(); 
+							break;
+						}
+						catch(err){
+							continue;
+						}
+					}
+					while(true){
+						try{
+							await driver[email].findElement(By.className('view-tab-bar-item icon-home')).click(); 
+							break;
+						}
+						catch(err){
+							continue;
+						}
+					}
+					while(true){
+						try{
+							await driver[email].findElement(By.id('UnassignedTile')).click();
+							break;
+						}
+						catch(err){
+							continue;
+						}
+					}
+					while(true){
+						try{
+							await driver[email].findElement(By.className('ut-group-button cta')).click();
+							buy_message(0,namePlayer,buyPrice);
+							break;
+						}
+						catch(err){
+							continue;
+						}
+					}
 					while(true){
 						try{
 							let btnQuickSell = await driver[email].findElements(By.className("flat"));
@@ -499,14 +546,14 @@ async function buy_player(namePlayer, buyPrice, bidPrice, email) {
 				}
 				if(nbrPlayer.length>1){
 
-					console.log('more then one');
+					buy_message(2,namePlayer)
 					await driver[email].findElement(By.className('view-tab-bar-item icon-settings')).click();
 					break;
 
 				}
 				if(await driver[email].findElement(By.className("no-results-screen"))){
 
-					console.log('no player');
+					buy_message(1,namePlayer);
 					await driver[email].findElement(By.className('view-tab-bar-item icon-settings')).click();
 					break;
 
@@ -517,7 +564,7 @@ async function buy_player(namePlayer, buyPrice, bidPrice, email) {
 
 				try{
 					await driver[email].findElement(By.className("no-results-screen"))
-					console.log("no-results");
+					buy_message(1,namePlayer);
 					break;
 				}
 
@@ -530,172 +577,50 @@ async function buy_player(namePlayer, buyPrice, bidPrice, email) {
 
 	}
 	else{
-		console.log('player price > account coins');
+		buy_message(3,namePlayer);
 	}
-		//document.querySelectorAll(".ut-button-group button")[9]  flat
 }
 
-
-
-
-async function testbuy(namePlayer, buyPrice, bidPrice, email) {
-
-	var coins = await driver[email].findElement(By.className('view-navbar-currency-coins')).getText();
-	coins = coins.replace(/\s/,'');
-	coins = coins*1;
-	buyPrice = buyPrice*1;
-	console.log(namePlayer);
-
-	if(coins >= buyPrice){
-		var inp = [];
-		var btnBuy = []
-		var nbrPlayer = [];
-		await driver[email].findElement(By.className('view-tab-bar-item icon-transfer')).click();
-		while (true) {
-			try {
-				await driver[email].findElement(By.className('tile col-1-1 ut-tile-transfer-market')).click();
-				
-				break;
-				
-			}
-			catch (err) {
-				continue;
-			}
-		}
-		while (true) {
-			try {
-				inp = await driver[email].findElements(By.className("numericInput"));
-				break;
-				
-			}
-			catch (err) {
-				continue;
-			}
-		}
-		while(true){
-			try{
-				if(inp[0]){
-					await driver[email].findElement(By.className("textInput")).click();
-					await driver[email].findElement(By.className("textInput")).sendKeys(namePlayer);
-					
-				}
-				break;
-			}
-			catch(err){
-				continue;
-			}
-		}
-		while(true){
-			try{
-				await driver[email].findElement(By.className("ut-button-group playerResultsList")).click();
-				break;
-			}
-			catch(err){
-				continue;
-			}
-		}
-		while(true){
-			try{
-				if(inp[0]){
-					await inp[0].click();
-					await inp[0].sendKeys(bidPrice);
-					await inp[1].click();
-					await inp[1].sendKeys(bidPrice);
-					await inp[2].click();
-					await inp[2].sendKeys(buyPrice);
-					await inp[3].click();
-					await inp[3].sendKeys(buyPrice);
-					await driver[email].findElement(By.className("btn-standard call-to-action")).click();	
-				}
-				break;
-			}
-			catch(err){
-				continue;
-			}
-		}
-
-		
-		while(true){
-			try{
-
-				nbrPlayer = await driver[email].findElements(By.className("listFUTItem has-auction-data"));
-			
-
-				await driver[email].findElement(By.className("btn-standard buyButton coins")).click();
-				while(true){
-					try{
-						
-						let btnBuy = await driver[email].findElements(By.className("flat"));
-						await btnBuy[1].click();
-						await driver[email].findElement(By.className('view-tab-bar-item icon-home')).click(); 
-
-						break;
-																																																																																																																																																																														
-					}
-
-					catch(err){
-						continue;
-					}
-				}
-				while(true){
-					try{
-						await driver[email].findElement(By.id('UnassignedTile')).click();
-						break;
-					}
-					catch(err){
-						continue;
-					}
-				}
-				while(true){
-					try{
-						await driver[email].findElement(By.className('ut-button-group')).click();
-						break;
-					}
-					catch(err){
-						continue;
-					}
-				}
-				while(true){
-					try{
-						let btnQuickSell = await driver[email].findElements(By.className("flat"));
-						await btnQuickSell[1].click();
-						await driver[email].findElement(By.className('view-tab-bar-item icon-settings')).click();
-						break
-					}
-					catch(err){
-						continue;
-					}
-				}
-
-				
-				
-				if(await driver[email].findElement(By.className("no-results-screen"))){
-
-					console.log('no player');
-					await driver[email].findElement(By.className('view-tab-bar-item icon-settings')).click();
-					break;
-
-				}
-				
-			}
-			catch(err){
-
-				try{
-					await driver[email].findElement(By.className("no-results-screen"))
-					console.log("no-results");
-					break;
-				}
-
-				catch(err){
-					continue;
-				}
-				
-			}
-		}
-
+function error_message(ty,coins){
+	if(ty === 1){
+		mainWindow.webContents.executeJavaScript("document.querySelector('#error-txt').innerHTML = 'INVALID EMAIL OR PASSWORD';");
+		mainWindow.webContents.executeJavaScript("document.querySelector('#error-msg').style.visibility = 'visible';");
 	}
-	else{
-		console.log('player price > account coins');
+	if(ty === 2){
+		mainWindow.webContents.executeJavaScript("document.querySelector('#error-txt').innerHTML = 'CONNECTION PROBLEM TRY AGAIN';");
+		mainWindow.webContents.executeJavaScript("document.querySelector('#error-msg').style.visibility = 'visible';");
 	}
-		//document.querySelectorAll(".ut-button-group button")[9]  flat
+	if(ty === 3){
+		mainWindow.webContents.executeJavaScript(`document.querySelector('#error-txt').innerHTML = 'END OF BUY . STILL IN YOUR ACCOUNT ${coins} COINS';`);
+		mainWindow.webContents.executeJavaScript("document.querySelector('#error-msg').style.background-color = '#007acc';");
+		mainWindow.webContents.executeJavaScript("document.querySelector('#error-msg').style.visibility = 'visible';");
+	}
+	if(ty === 4){
+		mainWindow.webContents.executeJavaScript(`document.querySelector('#error-txt').innerHTML = 'API KEY ERROR';`);
+		mainWindow.webContents.executeJavaScript("document.querySelector('#error-msg').style.visibility = 'visible';");
+	}
 }
+
+function buy_message(state,plname,val){
+	if(state === 0){
+		mainWindow.webContents.executeJavaScript(`
+		document.getElementById('players-liste').insertAdjacentHTML('beforeend','<div class="buy-state"><div id="player-name">${plname}</div><div id="discription-pos">Buying Succeeded ${val} coins</div><div id="discription-neg"></div></div>');
+		`);
+	}
+	if(state === 1){
+		mainWindow.webContents.executeJavaScript(`
+		document.getElementById('players-liste').insertAdjacentHTML('beforeend','<div class="buy-state"><div id="player-name">${plname}</div><div id="discription-pos"></div><div id="discription-neg">No Result</div></div>');
+		`);
+	}
+	if(state === 2){
+		mainWindow.webContents.executeJavaScript(`
+		document.getElementById('players-liste').insertAdjacentHTML('beforeend','<div class="buy-state"><div id="player-name">${plname}</div><div id="discription-pos"></div><div id="discription-neg">More Than One</div></div>');
+		`);
+	}
+	if(state === 3){
+		mainWindow.webContents.executeJavaScript(`
+		document.getElementById('players-liste').insertAdjacentHTML('beforeend','<div class="buy-state"><div id="player-name">${plname}</div><div id="discription-pos"></div><div id="discription-neg">The Price Of The Player Is Bigger</div></div>');
+		`);
+	}
+}
+

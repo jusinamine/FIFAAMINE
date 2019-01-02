@@ -5,7 +5,7 @@ body{
     height: 100%;
     margin: 0;
     padding: 0;
-    
+    overflow: hidden;
 }
 body, html {
     height: 100%;
@@ -19,9 +19,47 @@ body, html {
    position: fixed;
    margin-left: 250px;
    z-index: 5;
-   visibility: visible;
+   visibility: hidden;
    
 }
+#error-msg{
+    width: 85%;
+    margin-left: 250px;
+    font-family: Lato mid;
+    vertical-align: middle;
+    line-height: 40px;
+    height: 40px;
+    position: absolute;
+    z-index: 8;
+    color: white;
+    background-color: #F44336;
+    visibility: hidden;
+}
+
+#error-txt{
+    height: 100%;
+    width: 100%;
+    float: right;
+    text-align: center;
+}
+
+#close-msg-icon{
+    height: 40px;
+    width: 40px;
+    background-image: url('../icons/close-button.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 15px 15px;
+    position: absolute;
+    cursor: pointer;
+    margin-left: 92%;
+}
+
+#close-msg-icon:hover{
+    background-size: 18px 18px;
+    transition: background-size 100ms;
+}
+
 #top-menu{
     height: 40px;
     width: 100%;
@@ -42,16 +80,19 @@ body, html {
     font-size: 10px;
 
 }
+
 #club-name{
     margin-top: 8px;
     border-right: 1px solid #cccedb;
     padding-left: 2px;
     
 }
+
 #coins{
     margin-top: 8px;
     padding-left: 2px;
 }
+
 #left-menu{
     width: 250px; 
     height: 100%;
@@ -72,11 +113,12 @@ body, html {
 .action-box{
     width: 250px;
     height: 150px;
-    margin-left:40%;
-    margin-top: 5%;
+    margin-left:150px;
+    margin-top: 10px;
     background-color: #cccedb;
     padding-top: 5px;
     border-radius: 10px;
+    float: left;
 }
 
 .action-box h1{
@@ -86,6 +128,7 @@ body, html {
     font-size: 20px;
     font-family: lato heavy;
 }
+
 #buy-players{
     width: 200px;
     height: 40px;
@@ -100,9 +143,11 @@ body, html {
     border-radius: 5px;
     
 }
+
 #buy-players:hover{
     opacity: 0.55;
 }
+
 #buy-players p{
     font-size: 10px;
 }
@@ -120,9 +165,11 @@ body, html {
     cursor: pointer;
     border-radius: 5px;
 }
+
 #api-key-btn:hover{
     opacity: 0.55;
 }
+
 #api-key-inp{
     width: 150px;
     height: 20px;
@@ -134,11 +181,61 @@ body, html {
     border-bottom: 2px solid #007acc;
     visibility: hidden;
 }
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+
+::-webkit-input-placeholder { 
     color: #007acc;
     font-size: 10px;
     text-align: center;
   }
+
+.view-details{
+    height: 300px;
+    width: 650px;
+    margin-left: 150px;
+    margin-top: 40px;
+    border-radius: 10px;
+    background-color: #cccedb;
+    display: block;
+    float: left;
+}
+
+#div-title{
+    height: 40px;
+    width: 100%;
+    font-family: lato heavy;
+    font-size: 20px;
+    color: #007acc;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#players-liste{
+    width: 100%;
+    height: 220px;
+    overflow:hidden; 
+    overflow-y:scroll;
+}
+.buy-state{
+    width: 100%;
+    height: 20px;
+    font-family:  Lato mid;
+    font-size: 12px;
+}
+
+#player-name{
+    float: left;
+    margin-left: 40px;
+    padding-right: 20px;
+}
+
+#discription-pos{
+    color: 	#34f434;
+}
+
+#discription-neg{
+    color: #F44336;
+}
+
 #add-account{
     width: 100px;
     height: 40px;
@@ -188,10 +285,10 @@ p {
 }
 .accounts div{
     color: #007acc;
-    font-family: lato Medium;
+    font-family:  Lato mid;
     font-size: 15px ;
     text-align: center;
-    /* line-height: 30px; */
+
 }
 .email{
     width: 100%;
@@ -211,7 +308,7 @@ p {
     margin: 0;
     text-align: left; 
     color: #1e1e1e;
-    font-family: lato Medium;
+    font-family: Lato mid;
     font-size: 10px;
     position: relative;
     padding-left: 40px;
@@ -373,12 +470,54 @@ input:checked + .slider:before {
         width: 550px;
         margin-left: 0px;
      }
-     
+     #error-msg{
+         width: 550px;
+     }
+     #close-msg-icon{
+         margin-right: 0px;
+         margin-left: 90%;
+     }
     .info-compte{
         width: 20%;
         left: 0px;
     }
     .action-box{
-        margin-left: 20%;
+        margin-left: 10px;
     }
+    .view-details{
+        height: 300px;
+        width: 510px;
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+}
+
+/* scroll style*/
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #007acc;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #b4b4b4; 
+
+}
+
+@font-face {
+    font-family: Lato Heavy;
+    src: url('../fonts/Lato-Heavy.ttf');
+  }
+@font-face {
+  font-family: Lato mid;
+  src: url('../fonts/Lato-Medium.ttf');
 }

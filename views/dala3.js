@@ -160,6 +160,7 @@ function show_account_content(elm){
         };
     ipcRenderer.send('requestHandler', data);
 }
+
 var clickBuy = 0;
 document.getElementById('buy-players').addEventListener('click', () => {
     if(clickBuy === 0){
@@ -210,4 +211,8 @@ document.getElementById('api-key-btn').addEventListener('click', () => {
         clickbtnkey = 0;
     }
 
+});
+
+document.getElementById('close-msg-icon').addEventListener('click', () => {
+    document.getElementById('error-msg').style.visibility = 'hidden';
 });
