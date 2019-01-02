@@ -5,8 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Set your code</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    
+  
 </head>
 <body>
     <form>
@@ -22,7 +21,7 @@
 
         btnCode.addEventListener('click',function(e){
             e.preventDefault();
-            
+            btnCode.style .pointerEvents = 'none';
             let data = {
                 codeEa: inputCode.value,
                 type: 'sendEaCode'
@@ -30,6 +29,7 @@
             ipcRenderer.send('requestHandler', data);
             
         });
+
 
     
     </script>
