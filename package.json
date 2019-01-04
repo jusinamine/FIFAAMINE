@@ -1,5 +1,6 @@
 {
   "name": "fifa-bot",
+  "productName": "Fut Bot v1.0",
   "version": "1.0.0",
   "description": "fifa transfer coins desktop app",
   "main": "main.js",
